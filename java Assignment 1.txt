@@ -1,0 +1,243 @@
+
+//Name: Gurpreet Singh
+//Student ID: 201906317
+//Date Submitted: 20/March/2021
+//Class: IN2203 Group-1
+//Name of work: Assignment 1: The Gambling Game
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+
+public class MainApplication {
+
+    public final static void clearConsole() {
+        try {
+            final String os = System.getProperty("os.name");
+            if (os.contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+
+        clearConsole();
+        System.out.println("Assignment 1: The Gambling Game");
+        System.out.println("Name: Gurpreet Singh");
+        System.out.println("Student ID: 201906317");
+        System.out.println("Date Submitted: 20/March/20021");
+        System.out.println("Class: IN2203 Group-1");
+        System.out.println("Press any Key to continue.");
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
+        clearConsole();
+        System.out.println("Welcome to \"The Gambling Game\" Casino");
+        System.out.println("1. Enter to Casino");
+        System.out.println("2. Exit");
+        System.out.print("Choose Option : ");
+
+        input = sc.next();
+        while (input.equalsIgnoreCase("1")){
+            if (input.equals("1")) {
+                clearConsole();
+                Casino casino = new Casino();
+                System.out.print("Enter your Name : ");
+                input = sc.nextLine();
+                input = sc.nextLine();
+                Player player = new Player();
+                player.setName(input);
+                casino.addPlayerList(player);
+                clearConsole();
+
+                System.out.println("Welcome to \"The Gambling Game\" Playground");
+                System.out.println("1. Play Game");
+                System.out.println("2. Exit");
+                System.out.print("Choose Option : ");
+                input = sc.nextLine();
+
+                while (input.equalsIgnoreCase("1")){
+                    if (input.equals("1")) {
+                        Game game = casino.getGameById(Integer.parseInt(input));
+                        System.out.println("In this game we generate some number b/w (1-100) you have to guess the number.");
+                        System.out.println("If we gauss the actual number  with range of 10 you win else we win.");
+                        System.out.print("Do you want to continue (Y/N) : ");
+                        input = sc.next();
+
+                        while (input.equalsIgnoreCase("y")){
+                            game.generateNumber();
+                            System.out.print("Please enter your number : ");
+                            input = sc.next();
+                            player.setTotalPlay(player.getTotalPlay() + 1);
+                            try {
+                                int pN = Integer.parseInt(input);
+//                                System.out.println(game.getNumber());
+//                                System.out.println(game.getNumber());
+//                                System.out.println(pN + 10 > game.getNumber());
+//                                System.out.println(pN - 10 < game.getNumber());
+                                int diff = pN - game.getNumber();
+                                if (diff >= -10 && diff <= 10) {
+                                    System.out.println("You wins");
+                                    player.setTotalWins(player.getTotalWins() + 1);
+                                } else {
+                                    System.out.println("You loose");
+                                    System.out.println("Actual Number is "+ game.getNumber());
+                                }
+                            } catch (Exception e) {
+                                System.out.println("You loose");
+                            }
+                            System.out.print("Do you want to play again(y/n) : ");
+                            input = sc.next();
+                        }
+                    }else {
+                        System.out.println("Please enter valid option");
+                        System.out.print("Choose Option : ");
+                    }
+                }
+
+                clearConsole();
+                System.out.println("_____________________________________________________");
+
+                System.out.println("Player Name : "+player.getName());
+                System.out.println("Total Plays : "+player.getTotalPlay());
+                System.out.println("Total Wins : "+player.getTotalWins());
+
+                System.out.println("_____________________________________________________");
+            }else {
+                System.out.println("Please enter valid option");
+                System.out.println("Choose Option : ");
+                input = sc.nextLine();
+            }
+        }
+
+    }
+}
+
+
+class Casino {
+    private int id  = 234;
+    private String name = "The Gambling Game Casino";
+    private List<Player> playerList = new ArrayList<>();
+    private List<Game> gamesList = new ArrayList<>();
+
+    Casino(){
+        Game g = new Game(1, "Guess Game");
+        gamesList.add(g);
+    }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void addPlayerList(Player player) {
+        player.setId(playerList.size());
+        this.playerList.add(player);
+    }
+
+    public List<Game> getGamesList() {
+        return gamesList;
+    }
+
+    public Game getGameById(int id) {
+        return gamesList.get(id-1);
+    }
+}
+
+class Player {
+    private int id;
+    private String name;
+    private int totalWins;
+    private int totalPlay;
+
+    Player() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getTotalWins() {
+        return totalWins;
+    }
+
+    public void setTotalWins(int totalWins) {
+        this.totalWins = totalWins;
+    }
+
+    public int getTotalPlay() {
+        return totalPlay;
+    }
+
+    public void setTotalPlay(int totalPlay) {
+        this.totalPlay = totalPlay;
+    }
+}
+
+class Game extends Player {
+
+    private int id;
+    private String name;
+    private int number;
+
+    Game(int id, String name) {
+        this.id = id;
+        this.name = name;
+        generateNumber();
+    }
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void generateNumber() {
+        Random r = new Random();
+        int low = 10;
+        int high = 100;
+        this.number = r.nextInt(high - low) + low;
+        ;
+
+    }
+
+}
